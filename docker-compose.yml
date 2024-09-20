@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/Task-Manager-using-Flask
+      - ./todo_project/instance:/Task-Manager-using-Flask/todo_project/instance
+    environment:
+      FLASK_APP: todo_project/run.py
+      FLASK_DEBUG: 1
+
+volumes:
+  db_data:

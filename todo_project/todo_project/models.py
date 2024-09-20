@@ -1,5 +1,5 @@
 from todo_project import db, login_manager
-from datetime import datetime
+from datetime import datetime, timezone
 from flask_login import UserMixin
 
 
@@ -21,7 +21,8 @@ class User(db.Model, UserMixin):
 class Task(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(100), nullable=False)
-    date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    # date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    date_posted = db.Column(db.DateTime, nullable=False, default=lambda: datetime.now(timezone.utc))
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 
     def __repr__(self):

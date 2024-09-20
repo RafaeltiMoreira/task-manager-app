@@ -1,0 +1,66 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the code
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.x'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Build Docker Image
+      run: |
+        docker build -t nome_do_projeto .
+
+    - name: Run Tests
+      run: |
+        pytest
+
+    - name: Run Bandit for static analysis
+      run: |
+        pip install bandit
+        bandit -r todo_project/
+
+    - name: Run Dependency Check
+      run: |
+        pip install dependency-check
+        dependency-check --project MyProject --scan todo_project/
+
+    - name: Run OWASP ZAP
+      run: |
+        docker run -t owasp/zap2docker-stable zap-baseline.py -t http://localhost:5000 -r zap_report.html
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+    - name: Deploy to Local
+      run: |
+        echo "Deploying application to local."
+        cd Task-Manager-using-Flask/todo_project
+        python run.py && \
+        git pull && \
+        docker-compose down && \
+        docker-compose up -d && \
+        docker image prune -f && \
+        docker-compose logs -f
