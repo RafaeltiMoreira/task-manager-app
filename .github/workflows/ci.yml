@@ -36,7 +36,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        pytest todo_project/todo_project/tests/test_app.py
+        PYTHONPATH=todo_project pytest todo_project/todo_project/tests/test_app.py
 
     - name: Run Bandit for static analysis
       run: |
