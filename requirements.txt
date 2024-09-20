@@ -7,3 +7,6 @@ WTForms==2.3.3
 Werkzeug==2.2.3
 Jinja2==3.1.2
 Flask-Migrate>=3.1.0
+pytest
+bandit
+dependency-check
