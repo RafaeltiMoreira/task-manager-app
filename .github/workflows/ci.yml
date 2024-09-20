@@ -35,7 +35,7 @@ jobs:
 
     - name: Run Tests
       run: |
-        pytest
+        pytest tests/
 
     - name: Run Bandit for static analysis
       run: |
