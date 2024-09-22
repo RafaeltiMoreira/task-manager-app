@@ -36,6 +36,11 @@ jobs:
         with:
           username: ${{ secrets.USER }}
           password: ${{ secrets.PASS }}
+      - name: Remove existing containers
+        run: |
+          docker rm -f prometheus || true
+          docker rm -f grafana || true
+          docker rm -f task-manager-app_web_1 || true
       - name: Run Tests
         run: |
           pytest todo_project/tests/
