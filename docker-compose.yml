@@ -1,6 +1,42 @@
 version: '3.8'
 
+volumes:
+  grafana_data: {}
+  prometheus_data: {}
+
 services:
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    ports:
+      - 3030:3000
+    volumes:
+      - ./grafana:/etc/grafana/cofi
+      - grafana_data:/var/lib/grafana
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    restart: unless-stopped
+    ports:
+      - 3031:9090
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command: 
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention=31d'
+      - '--web.console.libraries=/usr/share/prometheus/console_libraries'
+      - '--web.console.templates=/usr/share/prometheus/consoles'
+  task_manager:
+    image: ghcr.io/scross01/prometheus-klipper-exporter:v0.10.0
+    container_name: task_manager-compose
+    restart: unless-stopped
+    ports:
+      - 3032:9101
+
   web:
     build: .
     ports:
@@ -13,21 +49,9 @@ services:
       
   bandit:
     build: .
-    command: bandit -r todo_project/
+    command: bandit -r Task-Manager-using-Flask
     volumes:
-      - .:/app
-
-  dependency-check:
-    image: owasp/dependency-check
-    command: --project MyProject --scan /app/todo_project/
-    volumes:
-      - .:/app
-
-  zap:
-    image: owasp/zap2docker-stable
-    ports:
-      - "8080:8080"
-    command: zap.sh -daemon -host 0.0.0.0 -port 8080
+      - .:/Task-Manager-using-Flask
 
   test:
     build: .
