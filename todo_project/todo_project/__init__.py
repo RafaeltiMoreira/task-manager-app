@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 import os
 load_dotenv()
 
-
 app = Flask(__name__)
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'default_secret_key')
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///site.db')
@@ -20,3 +19,6 @@ bcrypt = Bcrypt(app)
 
 # Always put Routes at end
 from todo_project import routes
+
+def create_app():
+    return app

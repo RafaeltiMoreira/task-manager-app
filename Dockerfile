@@ -4,7 +4,7 @@ WORKDIR /Task-Manager-using-Flask
 
 COPY requirements.txt requirements.txt
 
-RUN pip install bandit python-dotenv
+RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
