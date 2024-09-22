@@ -1,0 +1,16 @@
+global:
+    scrape_interval: 10s
+    metrics_path: /probe
+    static_configs:
+      - targets: []
+      scheme: http
+      timeout: 10s
+      api_version: v1
+scrape_configs:    
+  - job_name: 'prom_grafa'
+    scrape_interval: 5s
+    metrics_path: /metrics
+    scheme: http
+    static_configs:
+      - targets: 
+        - localhost:3031
